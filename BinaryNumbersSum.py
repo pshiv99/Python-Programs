@@ -10,23 +10,24 @@ def binarySum(firstBinaryString: str, secondBinaryString: str) -> str:
     '1010'
 
     """
-    if len(firstBinaryString) > len(secondBinaryString):
-        secondBinaryString = secondBinaryString.zfill(len(firstBinaryString))
-    elif len(firstBinaryString) < len(secondBinaryString):
-        firstBinaryString = firstBinaryString.zfill(len(secondBinaryString))
-
-    length = len(firstBinaryString)
-
     carry = 0
     revResult = ''
 
-    for i in range(length-1, -1, -1):
-        firstBit = int(firstBinaryString[i])
-        secondBit = int(secondBinaryString[i])
-        
+    iter1 = iter(firstBinaryString[::-1])
+    iter2 = iter(secondBinaryString[::-1])
+
+    for firstBit, secondBit in (map(int, i) for i in zip(iter1, iter2)):
         # Ripple Full Adder circuit imitation
         revResult = revResult + str(firstBit ^ secondBit ^ carry)
         carry = (firstBit and secondBit) or (secondBit and carry) or (carry and firstBit)
+
+    for firstBit in map(int, iter1):
+        revResult = revResult + str(firstBit ^ carry)
+        carry = firstBit and carry
+
+    for secondBit in map(int, iter2):
+        revResult = revResult + str(secondBit ^ carry)
+        carry = secondBit and carry
 
     if carry == 1:
         revResult = revResult + str(carry)
